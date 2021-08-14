@@ -2,8 +2,7 @@ const express=require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const dotenv = require('dotenv');
-const passport = require('passport'); 
-const crypto = require('crypto'); 
+// const crypto = require('crypto'); 
 
 const { notFoundiddleware } = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler'); 
@@ -34,11 +33,6 @@ app.use(session({
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
-
-require('./config/passport'); 
-
-app.use(passport.initialize())
-app.use(passport.session())
 
 app.get('/', (req, res)=>{
     console.log(req.session)
