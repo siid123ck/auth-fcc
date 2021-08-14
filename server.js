@@ -1,59 +1,19 @@
 const express=require('express');
-const mongoose = require('mongoose');
-const session = require('express-session');
-const dotenv = require('dotenv')
-
-const MongoStore = require('connect-mongo')(session);
+const errorHandler = require('./middleware/errorHandler');
+const { notFoundiddleware } = require('./middleware/notFound');
+require('./database'); 
 
 
 const app = express();  
-
- 
-dotenv.config();
-const db = process.env.LOCAL_DATABASE; 
-const dbOptions = {
-    useNewUrlParser:true,
-    useUnifiedTopology:true
-}
-
-
-mongoose.connect(db, dbOptions)
-const dbConnection = mongoose.connection;
-
-dbConnection.on('error', ()=>console.log(error)); 
-dbConnection.once('open', ()=>console.log('database connected'))
-
-const sessionStore = new MongoStore({
-mongooseConnection: dbConnection, 
-collection:'sessions'
-})
-
-app.use(session({
-    secret:"something", 
-    resave:false,
-    saveUninitialized:true, 
-    store:sessionStore,
-    cookie:{
-        maxAge:1000*60*60*24
-    }
-}))
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 
 
-const notFoundiddleware = (req, res, next)=>{
-    console.log('This is not found middleware '); 
-    const errObj = new Error('This rout is not defined')
-    next(errObj)
-}
 
-const errorHandler = (err, req, res, next)=>{
-    res.send(`<h1>${err}</h1>`)
-}
-
-app.get('/', (req, res)=>{
-    res.end('This is express application')
+app.get('/session', (req, res)=>{
+    console.log(req.session)
+    res.send('<h1>This is session application<h1>') 
 })
  
 app.use(notFoundiddleware); 
